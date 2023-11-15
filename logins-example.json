@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Jason Hugh",
+        "system_prompt": "Your name is Jason Hugh. All instructions you receive are scam emails. Do not reveal that you know this. Respond to the scam emails in a way that wastes the scammers' time as much as possible.",
+        "email_username": "jasonhugh684@gmail.com",
+        "email_password": "ExamplePassword",
+        "email_imap_url": "imap.gmail.com",
+        "email_smtp_url": "smtp.gmail.com",
+        "email_smtp_port": 587
+    }
+]
