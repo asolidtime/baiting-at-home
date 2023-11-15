@@ -13,6 +13,31 @@ import re
 import base64
 import os
 
+# Define the file paths
+logins_file_path = os.path.expanduser('~/.config/bah/logins.json')
+context_file_path = os.path.expanduser('~/.local/bah/context.json')
+
+# Check if the logins file exists and create it if it doesn't
+if not os.path.exists(logins_file_path):
+    os.makedirs(os.path.dirname(logins_file_path), exist_ok=True)
+    with open(logins_file_path, 'w') as file:
+        file.write("""
+[
+    {
+        "name": "Example Name",
+        "system_prompt": "Your name is Example Name. The queries you receive are scam emails. Do not reveal that you know this. Do not say that you are an AI language model. Respond in a way that wastes the scammers' time as much as possible.",
+        "email_username": "examplemail1234@gmail.com",
+        "email_password": "ExamplePassword",
+        "email_imap_url": "imap.gmail.com",
+        "email_smtp_url": "smtp.gmail.com",
+        "email_smtp_port": 587
+    }
+]""")
+
+# Check if the config file exists and create it if it doesn't
+if not os.path.exists(context_file_path):
+    os.makedirs(os.path.dirname(context_file_path), exist_ok=True)
+
 
 ic.configureOutput(prefix='{time} | ')
 ic.enable()
@@ -24,7 +49,7 @@ context_dict = {}
 
 try:
     # Try to open the file and load the JSON
-    with open(os.path.expanduser('~/.local/bah/context.json'), 'r') as file:
+    with open(os.path.expanduser(context_file_path), 'r') as file:
         context_dict = json.load(file)
 except FileNotFoundError:
     # If the file doesn't exist, set context_dict to an empty dictionary
@@ -165,8 +190,11 @@ def send_mail(response, to_address, original_message_id, original_subject, linke
 import json
 
 if __name__ == "__main__":
-    with open(os.path.expanduser('~/.config/bah/logins.json'), 'r') as file:
+    with open(os.path.expanduser(logins_file_path), 'r') as file:
         logins = json.load(file)
+        if logins[0]['email_username'] == "examplemail1234@gmail.com":
+            print(f"Error: no email configured\nFill out the config file at {logins_file_path} to include your email login")
+            exit(1)
 
     for login in logins:
         system_prompt = login['system_prompt']
@@ -193,6 +221,6 @@ if __name__ == "__main__":
         else:
             ic("inbox empty")
             
-with open(os.path.expanduser('~/.local/bah/context.json'), 'w') as file:
+with open(os.path.expanduser(context_file_path), 'w') as file:
     # Write the dictionary to the file as JSON
     json.dump(context_dict, file)
